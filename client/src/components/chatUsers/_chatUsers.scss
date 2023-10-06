@@ -1,0 +1,31 @@
+.chat_users_wrapper {
+    width: 300px;
+    box-sizing: border-box;
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    background-color: $llgray;
+
+    .item {
+        padding: 8px;
+        background-color: $lgray;
+        border-radius: 6px;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        cursor: pointer;
+
+        &:hover {
+            background-color: $gray;
+
+        }
+
+        img {
+            width: 30px;
+            height: 30px;
+            border-radius: 40px;
+            background-color: red;
+        }
+    }
+}

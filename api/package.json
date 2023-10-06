@@ -1,0 +1,31 @@
+{
+  "name": "api",
+  "version": "1.0.0",
+  "description": "",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@types/passport-google-oauth20": "^2.0.11",
+    "bcrypt": "^5.1.1",
+    "body-parser": "^1.20.2",
+    "cassandra-driver": "^4.7.2",
+    "connect-session-sequelize": "^7.1.7",
+    "dotenv": "^16.3.1",
+    "express": "^4.18.2",
+    "express-session": "^1.17.3",
+    "joi": "^17.10.2",
+    "mysql2": "^3.6.1",
+    "passport": "^0.6.0",
+    "passport-google-oauth20": "^2.0.0",
+    "passport-http-bearer": "^1.0.1",
+    "passport-local": "^1.0.0",
+    "sequelize": "^6.33.0",
+    "socket.io": "^4.7.2"
+  }
+}

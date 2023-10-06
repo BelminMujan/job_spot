@@ -1,0 +1,20 @@
+.sidebar_wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    background-color: $dark;
+    width: 240px;
+    height: 100vh;
+    box-sizing: border-box;
+    padding: 2rem 1.5rem;
+
+    a {
+        color: rgb(210, 210, 210);
+        text-decoration: none;
+        cursor: pointer;
+
+        &:hover {
+            color: white;
+        }
+    }
+}

@@ -1,0 +1,25 @@
+.input_wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    width: fit-content;
+
+    input {
+        padding: 6px 12px;
+        border-radius: 4px;
+        border: 1px solid $gray;
+        transition: all .2s ease;
+
+        &:focus {
+            border: 1px solid $gray;
+            box-shadow: 1px 1px 1px $gray;
+            outline: none;
+        }
+    }
+
+    &.error {
+        input {
+            border: 1px solid red;
+        }
+    }
+}
