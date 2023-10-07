@@ -8,7 +8,7 @@ let socket: any
 const Chat: React.FC = () => {
     const [mvalue, setMvalue] = useState("")
     const { user } = useAppSelector(state => state.user)
-    const [messages, setMessages] = useState([])
+    const [messages, setMessages] = useState<any>([])
     const messagesRef = useRef<null | HTMLDivElement>()
     useEffect(() => {
         socket = io({ path: "/socket" })
@@ -16,7 +16,7 @@ const Chat: React.FC = () => {
         socket.on("connect", () => {
             console.log("Connected to server");
         });
-        socket.on("connect_error", (e)=>{
+        socket.on("connect_error", (e: Error)=>{
             console.log("Error connecting on sockets: ", e)
         })
 
@@ -36,7 +36,6 @@ const Chat: React.FC = () => {
 
     useEffect(() => {
         if (messagesRef.current) {
-            console.log(messagesRef.current.scrollHeight);
             messagesRef.current.scrollTop = messagesRef.current.scrollHeight + 100
         }
     }, [messages])
@@ -45,17 +44,17 @@ const Chat: React.FC = () => {
 
     const handleMessage = (val: number) => {
         if (val === 13) {
-            let msg = { userId: user.id, message: mvalue, createdAt: new Date().toISOString() }
+            let msg = { from_user: user.id, message: mvalue, createdAt: new Date().toISOString() }
             setMessages(prev => [...prev, msg])
-            socket.emit("message", msg)
+            socket.emit("message", mvalue)
             setMvalue("")
         }
     }
 
     return <div className="chat_wrapper">
         <div className="messages" ref={messagesRef}>
-            {messages && messages.length !== 0 && messages.map((m, i) => {
-                return <Message key={"message_u_"+m?.userId + "_" + i} isCurrent={m?.userId === user.id} message={m?.message} />
+            {messages && messages.length !== 0 && messages.map((m: any, i: number) => {
+                return <Message key={"message_u_"+m?.from_user + "_" + i} isCurrent={m?.from_user === user.id} message={m?.message} />
             })}
         </div>
 
