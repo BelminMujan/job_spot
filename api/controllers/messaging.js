@@ -1,3 +1,4 @@
+const logger = require("../helpers/logger")
 const User = require("../models/user")
 const { sendMessage, loadMessagesPerChat } = require("../services/cassandra/messages")
 const { createRoom, loadRoomsForUser } = require("../services/cassandra/rooms")
@@ -52,19 +53,21 @@ const initializeChat = (server, middleware) => {
 const loadRooms = async (req, res) => {
     try {
         let user = await req.user
+        logger.info("Loading chat rooms for user: " + user.email)
+
         let rooms = await loadRoomsForUser(user.id)
         console.log(rooms);
         let participantIds = rooms?.map(rr => ([rr.user1, rr.user2]))
         if(participantIds && participantIds.length !== 0){
             participantIds=participantIds.reduce((a, b) => (a.concat(b)))
             participantIds = participantIds.filter(uid => uid !== user.id)
-            let users = await User.findAll({ where: { id: participantIds }, attributes: ["id", "email"] })
+            let users = await User.findAll({ where: { id: participantIds }, attributes: ["id", "email", "username"] })
             return res.status(200).json(users)
         }
         return res.status(200)
     
     } catch (err) {
-        console.log("Error loading rooms: ", err)
+        logger.error("MethodError: loadRooms - " + err)
     }
 }
 

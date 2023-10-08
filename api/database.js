@@ -1,4 +1,5 @@
-const Sequelize = require("sequelize")
+const Sequelize = require("sequelize");
+const logger = require("./helpers/logger");
 
 const sequelize = new Sequelize(process.env.DB_NAME, process.env.DB_USER, process.env.DB_PASS, {
     host: "localhost",
@@ -11,9 +12,11 @@ sequelize.authenticate().then(() => {
         console.log("Database connected and synced");
     }).catch(e => {
         console.log("Error syncing db");
+        logger.error("Error sycing sequelize db: " + e)
     })
 }).catch(e => {
-    console.log("Error connecting db");
+    logger.error("Error connecting sequelize db: " + e)
+
 })
 
 module.exports = { sequelize }

@@ -1,3 +1,5 @@
+const logger = require("../../helpers/logger");
+
 const createMessagesTableQuery = `CREATE TABLE IF NOT EXISTS jobspot.messages (
     message_id UUID,
     room_id TEXT,
@@ -16,22 +18,24 @@ const createUsersTableQuery = `CREATE TABLE IF NOT EXISTS jobspot.rooms (
 );`;
 
 
-const createTables = async (client)=>{
-    await [createMessagesTableQuery, createUsersTableQuery].forEach(async(qq)=>{
+const createTables = async (client) => {
+  try {
+    logger.info("Migrating cassandra tables!")
+    [createMessagesTableQuery, createUsersTableQuery].forEach(async (qq) => {
       await client.execute(qq)
-      .then(() => {
-        console.log('Table created or already exists');
-      })
-      .then(() => {
-        console.log('Index created or already exists');
-      })
-      .catch(error => {
-        console.error('Error creating table or index:', error);
-      });
+        .then(() => {
+          console.log('Table created or already exists');
+        })
+        .then(() => {
+          console.log('Index created or already exists');
+        })
+        .catch(error => {
+          console.error('Error creating table or index:', error);
+        });
     })
-
-
-
+  } catch (error) {
+    logger.error("Error creating cassandra tables: " + error)
+  }
 }
 
 
