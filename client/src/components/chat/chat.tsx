@@ -9,12 +9,19 @@ interface ChatProps {
     participant: number | null
 }
 
+interface iMessage {
+    room_id: string,
+    from_user: number,
+    message: string,
+    status: string
+}
+
 const Chat: React.FC<ChatProps> = ({ participant }) => {
     const [mvalue, setMvalue] = useState("")
     const { user } = useAppSelector(state => state.user)
-    const [messages, setMessages] = useState<any>([])
+    const [messages, setMessages] = useState<Array<iMessage>>([])
     const [roomName, setRoomName] = useState<string>("")
-    const messagesRef = useRef<null | HTMLDivElement | React.LegacyRef<HTMLElement>>()
+    const messagesRef = useRef<null | HTMLDivElement | React.LegacyRef<HTMLElement>>(null)
     useEffect(() => {
         if (participant && participant !== null) {
             socket = io({ path: "/socket" })

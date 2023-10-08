@@ -13,6 +13,7 @@ module.exports = {
             "@hoc": path.resolve(__dirname, "../src/hoc"),
             "@screen": path.resolve(__dirname, "../src/screens"),
             "@slice": path.resolve(__dirname, "../src/redux/features"),
+            "@src": path.resolve(__dirname, "../src"),
         }
     },
     module: {

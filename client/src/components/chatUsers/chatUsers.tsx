@@ -1,15 +1,12 @@
 import Input from "@component/input/input"
 import React, { useState, useEffect } from "react"
 import Api from "../../api/api"
+import { iUser } from "@slice/userSlice"
 
 interface ChatUsersProps {
     setParticipant: (userId: number) => void
 }
-type chatUser = {
-    id: number,
-    email: string
-}
-type chatUsers = Array<chatUser>
+type chatUsers = Array<iUser>
 
 const ChatUsers: React.FC<ChatUsersProps> = ({ setParticipant }) => {
     const api = new Api()
@@ -31,7 +28,7 @@ const ChatUsers: React.FC<ChatUsersProps> = ({ setParticipant }) => {
         api.get("/messages/load_rooms").then(data => {
             console.log("Loading rooms");
             console.log(data);
-            
+
             setUsers(data as chatUsers)
         })
     }
@@ -45,21 +42,21 @@ const ChatUsers: React.FC<ChatUsersProps> = ({ setParticipant }) => {
 
     const handleUserChange = (userId: number, user?: any) => {
         setParticipant(userId)
-        let contains = users.filter((u: chatUser) => u.id === userId)
+        let contains = users.filter(u => u.id === userId)
         if (!contains || contains.length === 0) {
             setUsers(prev => ([...prev, user]))
         }
     }
     return <div className="chat_users_wrapper">
         <Input label="Search" value={search} onChange={setSearch} />
-        <div>
-            {foundUsers && foundUsers.length !== 0 && foundUsers.map(u => {
-                return <div onClick={() => handleUserChange(u.id, u)}>{u.email}</div>
+        {foundUsers && foundUsers.length !== 0 && <div className="found_users_wrapper">
+            {foundUsers.map(u => {
+                return <div className="found_user" onClick={() => handleUserChange(u.id as number, u)}>{u.email}</div>
             })}
-        </div>
+        </div>}
         {users && users.length !== 0 && users.map((user, i) => {
-            return <div key={"user_chat_item_" + user?.id + "_" + i} className="item" onClick={() => handleUserChange(user?.id)}>
-                <img src="" /> {user?.email}
+            return <div key={"user_chat_item_" + user?.id + "_" + i} className="item" onClick={() => handleUserChange(user.id as number)}>
+                <img src="" /> {user?.username || user?.email}
             </div>
         })}
     </div>

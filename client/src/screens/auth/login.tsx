@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Link, useNavigate } from "react-router-dom"
+import { Link } from "react-router-dom"
 import Input from "@component/input/input";
 import Button from "@component/button/button";
 import Api from "../../api/api";
@@ -21,7 +21,6 @@ const Login: React.FC = () => {
         setError(null)
     }, [data])
     const api = new Api()
-    const navigate = useNavigate()
     const handleChange = (key: string, value: string) => {
         setData(prev => ({ ...prev, [key.toLowerCase()]: value }))
     }
@@ -37,7 +36,8 @@ const Login: React.FC = () => {
             key: "email",
             label: "Email",
             type: "email",
-            inputmode: "email"
+            inputmode: "email",
+            name: "email"
         },
         {
             key: "password",
@@ -49,8 +49,8 @@ const Login: React.FC = () => {
     return <div className="auth_wrapper">
         <div className="content">
             {fields.map(field => {
-                let err = (data?.[field.key] === "" && error) ? { error: true } : null
-                return <Input type={field.type} key={field.key} inputmode={field.inputmode} error={err} label={field.label} value={data?.[field.key as keyof dataStateTypes]} onChange={(v) => handleChange(field.key, v)} />
+                let err = (data?.[field.key as keyof dataStateTypes] === "" && error) ? { error: true } : null
+                return <Input name={field?.name} type={field.type} key={field.key} inputmode={field.inputmode} error={err} label={field.label} value={data?.[field.key as keyof dataStateTypes]} onChange={(v) => handleChange(field.key, v)} />
             })}
             <p className="error_message">{error?.message}</p>
             <Button action={handleLogin}>Login</Button>

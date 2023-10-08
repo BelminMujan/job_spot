@@ -4,4 +4,14 @@
     .messages_wrapper {
         display: flex;
     }
+    .settings_wrapper{
+        width: 250px;
+        padding: 2rem;
+        display: flex;
+        flex-direction: column;
+        gap: 0.75rem;
+        .input_wrapper{
+            width: 100%;
+        }
+    }
 }

@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom";
-
+import toast from "react-hot-toast"
 interface iApi {
     [key: string]: any
 }
@@ -12,9 +12,16 @@ class Api implements iApi {
     }
     handlePromise(res: any, resolve: any, reject: any) {
         res.json().then((data: any) => {
+            
             if (res?.status === 200) {
+                if(data.toast){
+                    toast.success(data.toast)
+                }
                 resolve(data)
             } else {
+                if(data.toast){
+                    toast.success(data.toast)
+                }
                 if (data.authenticated === false) {
                     return this.navigate("/login")
                 }

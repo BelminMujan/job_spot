@@ -89,4 +89,20 @@ const searchUsers = async (req, res) => {
     }
   
 }
-module.exports = { register, login, loadUser, logout, searchUsers }
+
+const updateUser = async(req,res)=>{
+    try {
+        let data = req.body
+        console.log(data);
+        let updated = await User.update(data, {
+            where: {
+              id: data.id,
+            },
+          })
+        console.log(updated);
+        return res.status(200).json({toast: "Updated sucessfully"})
+    } catch (error) {
+        console.log(error)
+    }
+}
+module.exports = { register, login, loadUser, logout, searchUsers, updateUser }

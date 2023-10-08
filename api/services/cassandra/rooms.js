@@ -18,8 +18,8 @@ const createRoom = async (u1, u2) => {
 };
 
 const loadRoomsForUser = async (userId) => {
-    const query1 = `SELECT room_id, user1, user2 FROM jobspot.rooms WHERE user1 = ?  ALLOW FILTERING;`
-    const query2 = `SELECT room_id, user1, user2 FROM jobspot.rooms WHERE user2 = ?  ALLOW FILTERING;`
+    const query1 = `SELECT user1, user2 FROM jobspot.rooms WHERE user1 = ?  ALLOW FILTERING;`
+    const query2 = `SELECT user1, user2 FROM jobspot.rooms WHERE user2 = ?  ALLOW FILTERING;`
     let rooms1 = await client.execute(query1, [parseInt(userId)], {prepare: true})
     let rooms2 = await client.execute(query2, [parseInt(userId)], {prepare: true})
     return [...rooms1.rows, ...rooms2.rows]

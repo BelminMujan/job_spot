@@ -5,7 +5,6 @@ import { sidebarItems } from "../../constants/adminSidebar";
 import useAuth from "@hook/useAuth";
 import Api from "../../api/api";
 import { useAppSelector } from "@hook/useRedux";
-
 const Admin: React.FC = () => {
     const auth = useAuth()
     const { user } = useAppSelector(state => state.user)
@@ -15,6 +14,7 @@ const Admin: React.FC = () => {
 
     return < div className="admin_wrapper" >
         {user?.id && <>
+            
             <Sidebar items={sidebarItems} />
             <Outlet />
         </>}

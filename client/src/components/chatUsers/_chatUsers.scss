@@ -6,6 +6,31 @@
     flex-direction: column;
     gap: 10px;
     background-color: $llgray;
+    .input_wrapper{
+        width: 100%;
+    }
+    .found_users_wrapper{
+        display: flex;
+        flex-direction: column;
+        position:absolute;
+        top: 80px;
+        background-color: white;
+        box-shadow: 0 0 6px $lgray;
+        gap: 4px;
+        padding: 10px 4px 6px 4px;
+        border-radius: 0 10px 10px 10px;
+        width: 252px;
+        box-sizing: border-box;
+        .found_user{
+            padding: 10px 14px;
+            cursor: pointer;
+            color: rgba(0, 0, 0, 0.7);
+            &:hover{
+                color: black;
+                background-color: $llgray;
+            }
+        }
+    }
 
     .item {
         padding: 8px;

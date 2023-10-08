@@ -1,8 +1,7 @@
-import { useState, useEffect } from 'react';
 import Api from '../api/api';
 import { useNavigate } from 'react-router-dom';
-import { removeUser, setUser } from '@slice/userSlice';
-import { useAppDispatch, useAppSelector } from './useRedux';
+import { iUser, setUser } from '@slice/userSlice';
+import { useAppDispatch } from './useRedux';
 
 
 const useAuth = () => {
@@ -14,7 +13,7 @@ const useAuth = () => {
         api.get("/auth/load_user").then(res => {
             console.log("res");
             console.log(res);
-            dispatch(setUser(res as {}))
+            dispatch(setUser(res as iUser))
         }).catch(e => {
             console.log("Error loading user:");
             console.log(e);
@@ -23,7 +22,7 @@ const useAuth = () => {
 
     const login = (data: { email: string, password: string }) => {
         return api.post("/auth/login", data).then(user => {
-            dispatch(setUser(user as {}))
+            dispatch(setUser(user as iUser))
             return navigate("/admin/settings")
         }).catch(e => {
             return e
@@ -33,20 +32,6 @@ const useAuth = () => {
     const logout = () => {
         api.logout()
     };
-
-    // useEffect(() => {
-    //     const checkAuthentication = () => {
-    //         if (!user?.id || !user?.email) {
-    //             dispatch(removeUser())
-    //             setIsAuthenticated(false)
-    //             logout();
-    //         } else {
-    //             setIsAuthenticated(true)
-    //         }
-    //     };
-
-    //     checkAuthentication();
-    // }, []);
 
     return { login, logout, loadUser };
 };
