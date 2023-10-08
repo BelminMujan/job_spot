@@ -5,34 +5,46 @@ import Message from "@component/message/message";
 import sendImg from "../../assets/send.png"
 let socket: any
 
-const Chat: React.FC = () => {
+interface ChatProps {
+    participant: number | null
+}
+
+const Chat: React.FC<ChatProps> = ({ participant }) => {
     const [mvalue, setMvalue] = useState("")
     const { user } = useAppSelector(state => state.user)
     const [messages, setMessages] = useState<any>([])
-    const messagesRef = useRef<null | HTMLDivElement>()
+    const [roomName, setRoomName] = useState<string>("")
+    const messagesRef = useRef<null | HTMLDivElement | React.LegacyRef<HTMLElement>>()
     useEffect(() => {
-        socket = io({ path: "/socket" })
+        if (participant && participant !== null) {
+            socket = io({ path: "/socket" })
 
-        socket.on("connect", () => {
-            console.log("Connected to server");
-        });
-        socket.on("connect_error", (e: Error)=>{
-            console.log("Error connecting on sockets: ", e)
-        })
+            socket.on("connect", () => {
+                console.log("Connected to server");
+                socket.emit("join_room", participant)
+                socket.on("joined_room", (roomName: string) => {
+                    setRoomName(roomName)
+                    console.log("Joined room: ", roomName);
 
-        socket.on("message", (data: any) => {
-            console.log("Received message:", data);
-            if (data?.length > 0) {
+                })
+            });
+            socket.on("connect_error", (e: Error) => {
+                console.log("Error connecting on sockets: ", e)
+            })
+
+            socket.on("load_messages", (data: any) => {
+                
                 setMessages(data)
-            } else {
-                setMessages(prev => [...prev, data])
-            }
-        });
+            });
+            socket.on("message", (message: any)=>{
+                setMessages(prev => [...prev, message])
+            })
+            return () => {
+                socket.disconnect();
+            };
+        }
 
-        return () => {
-            socket.disconnect();
-        };
-    }, []);
+    }, [participant]);
 
     useEffect(() => {
         if (messagesRef.current) {
@@ -43,18 +55,21 @@ const Chat: React.FC = () => {
 
 
     const handleMessage = (val: number) => {
-        if (val === 13) {
-            let msg = { from_user: user.id, message: mvalue, createdAt: new Date().toISOString() }
-            setMessages(prev => [...prev, msg])
-            socket.emit("message", mvalue)
+        if (val === 13 && mvalue && mvalue !== "") {
+            // let msg = { user1: user.id, message: mvalue, createdAt: new Date().toISOString() }
+            // setMessages(prev => [...prev, msg])
+            socket.emit("message", { room_id: roomName, message: mvalue })
             setMvalue("")
         }
+    }
+    if (!participant || participant === null) {
+        return <></>
     }
 
     return <div className="chat_wrapper">
         <div className="messages" ref={messagesRef}>
             {messages && messages.length !== 0 && messages.map((m: any, i: number) => {
-                return <Message key={"message_u_"+m?.from_user + "_" + i} isCurrent={m?.from_user === user.id} message={m?.message} />
+                return <Message key={"message_"+m.message_id} isCurrent={m?.from_user === user.id} message={m?.message} />
             })}
         </div>
 

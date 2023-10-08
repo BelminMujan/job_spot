@@ -32,13 +32,25 @@ const Login: React.FC = () => {
         setError(err)
     }
 
-    const fields = ["Email", "Password"]
+    const fields = [
+        {
+            key: "email",
+            label: "Email",
+            type: "email",
+            inputmode: "email"
+        },
+        {
+            key: "password",
+            label: "Password",
+            type: "password"
+        }
+    ]
+    
     return <div className="auth_wrapper">
         <div className="content">
             {fields.map(field => {
-                const fieldKey = field.toLowerCase() as keyof dataStateTypes
-                let err = (data?.[fieldKey] === "" && error) ? { error: true } : null
-                return <Input error={err} key={fieldKey} label={field} value={data?.[fieldKey]} onChange={(v) => handleChange(fieldKey, v)} />
+                let err = (data?.[field.key] === "" && error) ? { error: true } : null
+                return <Input type={field.type} key={field.key} inputmode={field.inputmode} error={err} label={field.label} value={data?.[field.key as keyof dataStateTypes]} onChange={(v) => handleChange(field.key, v)} />
             })}
             <p className="error_message">{error?.message}</p>
             <Button action={handleLogin}>Login</Button>

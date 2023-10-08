@@ -16,9 +16,8 @@ const useAuth = () => {
             console.log(res);
             dispatch(setUser(res as {}))
         }).catch(e => {
-            console.log("e");
+            console.log("Error loading user:");
             console.log(e);
-            return e
         })
     }
 

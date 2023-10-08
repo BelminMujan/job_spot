@@ -9,7 +9,7 @@ const bodyParser = require("body-parser")
 const passport = require("passport")
 const session = require("express-session")
 require("./passport.config.js")
-const initializeChat = require("./controllers/messaging")
+const {initializeChat} = require("./controllers/messaging")
 var SequelizeStore = require("connect-session-sequelize")(session.Store);
 
 

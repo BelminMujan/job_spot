@@ -2,13 +2,14 @@ const Joi = require("joi");
 const User = require("../models/user")
 const joii = require("../helpers/joii");
 const passport = require("passport");
+const { Op } = require("sequelize");
 const register = async (req, res) => {
     const bcrypt = require("bcrypt")
     const schema = joii.object({
         email: Joi.string().email({ minDomainSegments: 2 }),
         password: Joi.string(),
         // password: Joi.string().alphanum().pattern(new RegExp('^[a-zA-Z0-9]{8, 30}$')),
-        passwordconfirm: Joi.ref("password")
+        password_confirm: Joi.ref("password")
     }).options({ abortEarly: false })
     const validateResult = schema.validate(req.body)
     if (validateResult?.error) {
@@ -62,4 +63,30 @@ const login = async (req, res, next) => {
         }
     })(req, res, next);
 }
-module.exports = { register, login, loadUser, logout }
+
+const searchUsers = async (req, res) => {
+
+    try {
+        let term = req.query
+        console.log(term);
+
+        if (!term || !term.email || term.email === "") {
+            return res.status(200)
+        }
+        let users = await User.findAll({
+            where: {
+                email: {
+                    [Op.like]: `%${term?.email}%`
+                }
+            },
+            attributes: ["id", "email"]
+        })
+        if(users){
+            return res.status(200).json(users)
+        }
+    } catch (error) {
+        console.log(error)
+    }
+  
+}
+module.exports = { register, login, loadUser, logout, searchUsers }

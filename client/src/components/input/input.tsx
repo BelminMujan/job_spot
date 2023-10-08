@@ -5,13 +5,14 @@ interface InputTypes {
     type?: string,
     value: number | string,
     onChange: (value: string) => void,
-    error?: any
+    error?: any,
+    inputmode?: any,
 }
 
-const Input: React.FC<InputTypes> = ({ label, type, value, onChange, error }: InputTypes) => {
+const Input: React.FC<InputTypes> = ({ label, type, value, onChange, error, inputmode = "text" }: InputTypes) => {
     return <label className={`input_wrapper ${error ? "error" : ""}`}>
         {label}
-        <input type={type || "text"} value={value} onChange={(e) => onChange(e.target.value)} />
+        <input inputMode={inputmode} autoCapitalize={(type === "email" || type === "password") ? "none" : ""} type={type || "text"} value={value} onChange={(e) => onChange(e.target.value)} />
         {error && <p className="error_message">{error?.message}</p>}
     </label>
 }

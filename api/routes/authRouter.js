@@ -9,4 +9,5 @@ routes.post("/register", authController.register)
 routes.post("/login", authController.login)
 routes.get("/logout", checkAuth, authController.logout)
 routes.get("/load_user", checkAuth, authController.loadUser)
+routes.get("/search", checkAuth, authController.searchUsers)
 module.exports = routes 

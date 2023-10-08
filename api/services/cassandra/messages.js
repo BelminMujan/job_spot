@@ -1,18 +1,18 @@
 const client = require("./cassandra");
 const { v4: uuidv4 } = require('uuid');
 
-const sendMessage = async (from, to, message) => {
+const sendMessage = async (room_id, from, message) => {
     try {
         const timestamp = new Date().getTime();
-        const query = `INSERT INTO jobspot.messages (message_id, from_user, to_user, message, status, created_at) VALUES (?, ?, ?, ?, ?, ?) if not exists;`;
-        let message_id = uuidv4()
-        const params = [message_id, parseInt(from), parseInt(to), message, 'sent', timestamp];
+        const message_id = uuidv4()
+        const query = `INSERT INTO jobspot.messages (room_id, message_id, from_user, message, status, created_at) VALUES (?, ?, ?, ?, ?, now()) if not exists;`;
+        const params = [room_id,message_id, parseInt(from), message, 'sent'];
         let res = await client.execute(query, params, { prepare: true })
         if (res && res.rows[0]['[applied]']) {
             return {
+                room_id,
                 message_id,
                 from_user: parseInt(from),
-                to_user: parseInt(to),
                 message,
                 status: 'sent',
                 created_at: timestamp
@@ -25,16 +25,14 @@ const sendMessage = async (from, to, message) => {
     }
 };
 
-const loadMessagesPerChat = async (from, to)=>{
-    const query = `select * from jobspot.messages where from_user = ? and to_user = ?;`
-    let params = [parseInt(from), parseInt(to)]
+const loadMessagesPerChat = async (room_id)=>{
+    const query = `SELECT * FROM jobspot.messages WHERE room_id = ?;`
+    let params = [room_id]
     try {
         let res = await client.execute(query, params, {prepare: true})
         return res
     } catch (err) {
         console.log("Error loading messages: ", err)
-    }
-    
-    
+    } 
 }
 module.exports = {sendMessage,loadMessagesPerChat}

@@ -7,14 +7,14 @@ import Api from "../../api/api";
 interface dataStateTypes {
     email: string,
     password: string,
-    passwordconfirm: string
+    password_confirm: string
 }
 
 const Register: React.FC = () => {
     const [data, setData] = useState<dataStateTypes>({
         email: "",
         password: "",
-        passwordconfirm: "",
+        password_confirm: "",
     })
     const [error, setError] = useState([])
     const api = new Api()
@@ -39,12 +39,28 @@ const Register: React.FC = () => {
         return err
     }
 
-    const fields = ["Email", "Password", "Password confirm"]
+    const fields = [
+        {
+            key: "email",
+            label: "Email",
+            type: "email",
+            inputmode: "email"
+        },
+        {
+            key: "password",
+            label: "Password",
+            type: "password"
+        },
+        {
+            key: "password_confirm",
+            label: "Password confirm",
+            type: "password"
+        }
+    ]
     return <div className="auth_wrapper">
         <div className="content">
             {fields.map(field => {
-                let key = field.toLowerCase().replaceAll(" ", "")
-                return <Input key={key} error={getError(key)} label={field} value={data?.[field as keyof dataStateTypes]} onChange={(v) => handleChange(field, v)} />
+                return <Input type={field.type} key={field.key} inputmode={field.inputmode} error={error && getError(field.key)} label={field.label} value={data?.[field.key as keyof dataStateTypes]} onChange={(v) => handleChange(field.key, v)} />
             })}
             <Button action={handleRegister}>Register</Button>
             <p className="info">Already have an account? <Link to="/login">Log in</Link></p>
