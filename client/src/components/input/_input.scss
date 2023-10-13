@@ -19,6 +19,7 @@
 
     .input_img {
         @extend .input_field;
+        cursor: pointer;
 
         img {
             width: 100%;
