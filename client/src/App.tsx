@@ -10,7 +10,6 @@ import Admin from "./screens/dashboard/admin";
 import { Provider } from "react-redux";
 import { store } from "./redux/store";
 import { Toaster } from "react-hot-toast"
-
 const router = createBrowserRouter([
     {
         path: "",

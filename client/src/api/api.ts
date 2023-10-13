@@ -12,14 +12,14 @@ class Api implements iApi {
     }
     handlePromise(res: any, resolve: any, reject: any) {
         res.json().then((data: any) => {
-            
+
             if (res?.status === 200) {
-                if(data.toast){
+                if (data.toast) {
                     toast.success(data.toast)
                 }
                 resolve(data)
             } else {
-                if(data.toast){
+                if (data.toast) {
                     toast.success(data.toast)
                 }
                 if (data.authenticated === false) {
@@ -73,6 +73,19 @@ class Api implements iApi {
                 reject(error)
             }
         })
+    }
+
+    async uploadImage(image: any) {
+
+        let form = new FormData()
+        form.append("image", image)
+
+        const response = await fetch("/api/auth/upload_photo", {
+            method: 'POST',
+            credentials: "same-origin",
+            body: form,
+        })
+        console.log("Upload image res: ", response)
     }
 }
 

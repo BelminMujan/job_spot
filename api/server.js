@@ -1,5 +1,7 @@
-const app = require("express")()
+const express = require("express")
+const app = express()
 const http = require("http")
+const fileUpload = require("express-fileupload")
 const server = http.createServer(app)
 
 require("dotenv").config()
@@ -9,7 +11,8 @@ const bodyParser = require("body-parser")
 const passport = require("passport")
 const session = require("express-session")
 require("./passport.config.js")
-const {initializeChat} = require("./controllers/messaging")
+const { initializeChat } = require("./controllers/messaging")
+const path = require("path")
 var SequelizeStore = require("connect-session-sequelize")(session.Store);
 
 
@@ -36,6 +39,10 @@ app.use(bodyParser.json())
 app.use(sessionMiddleware)
 app.use(passport.initialize())
 app.use(passport.session())
+app.use('/files', express.static(path.join(__dirname, 'storage')));
+app.use(fileUpload({
+    limits: { fileSize: 50 * 1024 * 1024 },
+}));
 
 
 

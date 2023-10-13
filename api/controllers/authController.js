@@ -97,15 +97,41 @@ const searchUsers = async (req, res) => {
             return res.status(200).json(users)
         }
     } catch (error) {
-        console.log(error)
+        logger.error("Error searching users: ", error)
+        return res.status(500).json({ error: error })
+
     }
 
+}
+
+const uploadPhoto = async (req, res) => {
+
+    try {
+        let file = req.files.image;
+        console.log(file)
+        if (!file) {
+            return res.sendStatus(400);
+        }
+        file.mv("./storage/" + file.name, err => {
+            if (err) {
+                logger.error("Error uploading image: ", err)
+                return res.status(500).send(err);
+            }
+            logger.info("Image uploaded succesfully")
+            return res.status(200).json({ toast: "Image uploaded succesfully" });
+        });
+    } catch (error) {
+        logger.error("MethodError: uploadPhoto - " + error)
+        return res.status(500).json({ error: error })
+
+    }
 }
 
 const updateUser = async (req, res) => {
     try {
         let data = req.body
         logger.info("Updating user: " + data?.email)
+
         await User.update(data, {
             where: {
                 id: data.id,
@@ -114,6 +140,7 @@ const updateUser = async (req, res) => {
         return res.status(200).json({ toast: "Updated sucessfully" })
     } catch (error) {
         logger.error("MethodError: updateUser - " + error)
+        return res.status(500).json({ error: error })
     }
 }
-module.exports = { register, login, loadUser, logout, searchUsers, updateUser }
+module.exports = { register, login, loadUser, logout, searchUsers, updateUser, uploadPhoto }

@@ -2,6 +2,7 @@ import Input from "@component/input/input"
 import React, { useState, useEffect } from "react"
 import Api from "../../api/api"
 import { iUser } from "@slice/userSlice"
+import { useDebounce } from "@hook/useDebounce"
 
 interface ChatUsersProps {
     setParticipant: (userId: number) => void
@@ -11,18 +12,20 @@ type chatUsers = Array<iUser>
 const ChatUsers: React.FC<ChatUsersProps> = ({ setParticipant }) => {
     const api = new Api()
     const [search, setSearch] = useState<string>("")
+    const debouncedSearch = useDebounce(search)
     const [users, setUsers] = useState<chatUsers>([])
     const [foundUsers, setFoundUsers] = useState<chatUsers>([])
     useEffect(() => {
         loadRooms()
     }, [])
     useEffect(() => {
-        if (search === "") {
+        if (debouncedSearch === "") {
             setFoundUsers([])
         } else {
             searchUsers()
         }
-    }, [search])
+    }, [debouncedSearch])
+
 
     const loadRooms = async () => {
         api.get("/messages/load_rooms").then(data => {
@@ -33,7 +36,7 @@ const ChatUsers: React.FC<ChatUsersProps> = ({ setParticipant }) => {
         })
     }
     const searchUsers = () => {
-        api.get(`/auth/search?email=${search}`).then(data => {
+        api.get(`/auth/search?email=${debouncedSearch}`).then(data => {
             console.log("Searched");
             console.log(data);
             setFoundUsers(data as chatUsers)

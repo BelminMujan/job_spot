@@ -45,12 +45,21 @@ const Login: React.FC = () => {
             type: "password"
         }
     ]
-    
+
     return <div className="auth_wrapper">
         <div className="content">
             {fields.map(field => {
                 let err = (data?.[field.key as keyof dataStateTypes] === "" && error) ? { error: true } : null
-                return <Input name={field?.name} type={field.type} key={field.key} inputmode={field.inputmode} error={err} label={field.label} value={data?.[field.key as keyof dataStateTypes]} onChange={(v) => handleChange(field.key, v)} />
+                return <Input
+                    name={field?.name}
+                    type={field.type}
+                    key={field.key}
+                    inputmode={field.inputmode}
+                    error={err}
+                    label={field.label}
+                    value={data?.[field.key as keyof dataStateTypes]}
+                    onSubmit={handleLogin}
+                    onChange={(v) => handleChange(field.key, v)} />
             })}
             <p className="error_message">{error?.message}</p>
             <Button action={handleLogin}>Login</Button>

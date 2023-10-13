@@ -10,5 +10,6 @@ routes.post("/login", authController.login)
 routes.get("/logout", checkAuth, authController.logout)
 routes.get("/load_user", checkAuth, authController.loadUser)
 routes.post("/update_user", checkAuth, authController.updateUser)
+routes.post("/upload_photo", checkAuth, authController.uploadPhoto)
 routes.get("/search", checkAuth, authController.searchUsers)
 module.exports = routes 

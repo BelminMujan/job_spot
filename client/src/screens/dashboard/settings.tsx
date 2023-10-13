@@ -1,4 +1,5 @@
 import Button from "@component/button/button";
+import ImageSelect from "@component/input/imageSelect";
 import Input from "@component/input/input";
 import { useAppSelector } from "@hook/useRedux";
 import { iUser } from "@slice/userSlice";
@@ -18,7 +19,11 @@ const Settings: React.FC = () => {
         setData(prev => ({ ...prev, [key]: val }))
     }
     const saveChanges = () => {
-        api.post("/auth/update_user", { id: data?.id, email: data?.email, username: data?.username }).then(res => {
+        api.uploadImage(data?.image).then(res => {
+            console.log(res);
+
+        })
+        api.post("/auth/update_user", { id: data?.id, email: data?.email, username: data?.username, image: data?.image?.name }).then(res => {
             console.log("Updating succeed")
             console.log(res);
         }).catch((e) => {
@@ -30,6 +35,8 @@ const Settings: React.FC = () => {
         <h3>Settings</h3>
         <Input label="Email" value={data?.email as string} onChange={(v) => handleChange("email", v)} />
         <Input label="Username" value={data?.username as string} onChange={(v) => handleChange("username", v)} />
+        <img alt="" src={"http://localhost:3001/files/" + data?.image} />
+        <ImageSelect label="Select profile image" onChange={(v) => handleChange("image", v)} />
         <Button action={saveChanges}>Save changes</Button>
     </div>
 }
