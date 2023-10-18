@@ -1,8 +1,8 @@
-const passport = require("passport");
-const User = require("./models/user")
-const bcrypt = require("bcrypt");
-const LocalStrategy = require("passport-local").Strategy
-
+import passport from "passport"
+import User from "./database/models/user.js"
+import bcrypt from "bcrypt"
+import passportLocal from "passport-local"
+var LocalStrategy = passportLocal.Strategy
 passport.use(new LocalStrategy({ usernameField: "email" },
     async function (email, password, done) {
         console.log("authenitacting in local startegy")

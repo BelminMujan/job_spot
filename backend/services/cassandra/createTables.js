@@ -1,4 +1,4 @@
-const logger = require("../../helpers/logger");
+import logger from "../../utils/logger.js"
 
 const createMessagesTableQuery = `CREATE TABLE IF NOT EXISTS jobspot.messages (
     message_id UUID,
@@ -39,4 +39,4 @@ const createTables = async (client) => {
 }
 
 
-module.exports = createTables
+export default createTables

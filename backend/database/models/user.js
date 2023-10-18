@@ -1,7 +1,7 @@
-const { DataTypes } = require("sequelize");
-const { sequelize } = require("../database");
+import { DataTypes } from "sequelize";
 
-const bcrypt = require("bcrypt");
+import bcrypt from "bcrypt";
+import sequelize from "../index.js";
 
 const User = sequelize.define("User", {
     email: {
@@ -35,4 +35,5 @@ User.beforeUpdate(async (user) => {
     }
 
 });
-module.exports = User 
+
+export default User

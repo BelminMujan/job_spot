@@ -8,4 +8,4 @@ const checkAuth = async (req, res, next) => {
     }
 }
 
-module.exports = checkAuth
+export default checkAuth

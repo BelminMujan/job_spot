@@ -1,11 +1,12 @@
-const logger = require("../helpers/logger")
-const User = require("../models/user")
-const { sendMessage, loadMessagesPerChat } = require("../services/cassandra/messages")
-const { createRoom, loadRoomsForUser } = require("../services/cassandra/rooms")
+import User from "../database/models/user.js"
+import logger from "../utils/logger.js"
+import { sendMessage, loadMessagesPerChat } from "../services/cassandra/messages.js"
+import { createRoom, loadRoomsForUser } from "../services/cassandra/rooms.js"
 
 
 
-const initializeChat = (server, middleware) => {
+
+export const initializeChat = (server, middleware) => {
     const io = require("socket.io")(server, {
         path: "/socket",
     })
@@ -50,7 +51,7 @@ const initializeChat = (server, middleware) => {
     })
 }
 
-const loadRooms = async (req, res) => {
+export const loadRooms = async (req, res) => {
     try {
         let user = await req.user
         logger.info("Loading chat rooms for user: " + user.email)
@@ -58,14 +59,14 @@ const loadRooms = async (req, res) => {
         let rooms = await loadRoomsForUser(user.id)
         console.log(rooms);
         let participantIds = rooms?.map(rr => ([rr.user1, rr.user2]))
-        if(participantIds && participantIds.length !== 0){
-            participantIds=participantIds.reduce((a, b) => (a.concat(b)))
+        if (participantIds && participantIds.length !== 0) {
+            participantIds = participantIds.reduce((a, b) => (a.concat(b)))
             participantIds = participantIds.filter(uid => uid !== user.id)
             let users = await User.findAll({ where: { id: participantIds }, attributes: ["id", "email", "username"] })
             return res.status(200).json(users)
         }
         return res.status(200)
-    
+
     } catch (err) {
         logger.error("MethodError: loadRooms - " + err)
     }
@@ -73,4 +74,3 @@ const loadRooms = async (req, res) => {
 
 
 
-module.exports = { initializeChat, loadRooms }

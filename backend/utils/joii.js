@@ -1,4 +1,4 @@
-const Joi = require("joi");
+import Joi from "joi"
 
 Joi.ValidationError.prototype.toJson = function () {
     let errors = this.details.map(detail => {
@@ -7,4 +7,4 @@ Joi.ValidationError.prototype.toJson = function () {
     return errors
 }
 
-module.exports = Joi
+export default Joi

@@ -1,7 +1,8 @@
-const Sequelize = require("sequelize");
-const logger = require("./helpers/logger");
+import Sequelize from "sequelize";
+import logger from "../utils/logger.js";
+import { DB_NAME, DB_PASS, DB_USER } from "../config/index.js";
 
-const sequelize = new Sequelize(process.env.DB_NAME, process.env.DB_USER, process.env.DB_PASS, {
+const sequelize = new Sequelize(DB_NAME, DB_USER, DB_PASS, {
     host: "localhost",
     dialect: "mysql",
 })
@@ -19,4 +20,4 @@ sequelize.authenticate().then(() => {
 
 })
 
-module.exports = { sequelize }
+export default sequelize

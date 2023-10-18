@@ -1,5 +1,5 @@
-const cassandra = require("cassandra-driver")
-const createTables = require("./createTables")
+import cassandra from "cassandra-driver"
+import createTables from "./createTables.js"
 
 let authProvider = new cassandra.auth.PlainTextAuthProvider(process.env.CASSANDRA_USER, process.env.CASSANDRA_PASS)
 const contactPoints = ["127.0.0.1:9042"]
@@ -18,4 +18,4 @@ const client = new cassandra.Client({
 
 createTables(client)
 
-module.exports = client
+export default client

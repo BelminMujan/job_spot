@@ -1,6 +1,6 @@
-const logger = require("../../helpers/logger");
-const client = require("./cassandra");
-const { v4: uuidv4 } = require('uuid');
+import logger from "../../utils/logger.js"
+import client from "./cassandra.js"
+import { v4 as uuidv4 } from 'uuid'
 
 const sendMessage = async (room_id, from, message) => {
     try {
@@ -37,4 +37,4 @@ const loadMessagesPerChat = async (room_id) => {
         logger.error("Error loading messages for room_id: " + room_id)
     }
 }
-module.exports = { sendMessage, loadMessagesPerChat }
+export { sendMessage, loadMessagesPerChat }
