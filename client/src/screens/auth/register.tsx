@@ -35,6 +35,7 @@ const Register: React.FC = () => {
     }
 
     const getError = (key: string) => {
+        return null
         let err = error?.filter((e: { key: string, message: string }) => e.key === key)?.[0]
         return err
     }

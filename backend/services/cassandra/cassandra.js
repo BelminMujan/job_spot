@@ -16,6 +16,6 @@ const client = new cassandra.Client({
 
 })
 
-createTables(client)
+// createTables(client)
 
 export default client

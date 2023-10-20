@@ -2,6 +2,8 @@ import Joi from "joi"
 import joii from "../utils/joii.js"
 import UserRepository from "../database/repository/user.js"
 import User from "../database/models/user.js"
+import { loginfo } from "../utils/log.js"
+import { AppError } from "../utils/Error.js"
 
 export default class UserService {
 
@@ -19,8 +21,7 @@ export default class UserService {
         const validateResult = schema.validate({ email, password, password_confirm })
 
         if (validateResult?.error) {
-            logger.error("Invalid data during register")
-            return res.status(412).json(validateResult.error.toJson())
+            throw new AppError("Validation error", 500, "Error validating on register", true, err.stack)
         }
 
         let user = await userRepository.createUser({ email, password })
@@ -30,17 +31,12 @@ export default class UserService {
     async login() {
         passport.authenticate('local', (err, user, info) => {
             if (err) {
-                logger.error("Error on login api: ", err)
-                return res.status(500).json(err)
+                throw new AppError("App error", 500, "Error on passport authenticate", true, err?.stack)
             } else {
                 if (user) {
-                    logger.info("Attempt logging in: " + user.email)
-
-
+                    loginfo("Attempt logging in: " + user.email)
                 } else {
-                    logger.error("MethodError: login - " + info)
-                    return res.status(401).json(info)
-
+                    throw new AppError("Api error", 401, "Unathorized", true, info)
                 }
             }
         });

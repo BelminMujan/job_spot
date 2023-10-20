@@ -1,17 +1,26 @@
 import { Router } from "express"
 import checkAuth from "./middleware/isAuthenticated.js"
 const routes = Router()
-import logger from "../utils/logger.js"
 import UserService from "../services/user.js"
+import { AppError, STATUS_CODES } from "../utils/Error.js"
+import { loginfo } from "../utils/log.js"
 
 const userService = new UserService()
 
 
 routes.post("/register", async (req, res) => {
     try {
+        loginfo("test")
         const { email, password, password_confirm } = req.body
         const { data } = await userService.register(email, password, password_confirm)
     } catch (error) {
+        throw new AppError(
+            "API Error",
+            STATUS_CODES.INTERNAL_ERROR,
+            "Error on register",
+            true,
+            error.stack,
+        )
     }
 })
 
@@ -69,15 +78,13 @@ routes.post("/upload_photo", checkAuth, async (req, res) => {
         }
         file.mv("./storage/" + file.name, err => {
             if (err) {
-                logger.error("Error uploading image: ", err)
-                return res.status(500).send(err);
+                throw new AppError("App error", 500, "Error Saving photo", true, err.stack)
             }
-            logger.info("Image uploaded succesfully")
+            loginfo("Image uploaded succesfully")
             return res.status(200).json({ toast: "Image uploaded succesfully" });
         });
     } catch (error) {
-        logger.error("MethodError: uploadPhoto - " + error)
-        return res.status(500).json({ error: error })
+        throw new AppError("Api error", 500, "Error uploading photo", true, error.stack)
     }
 })
 routes.get("/search", checkAuth, async (req, res) => {

@@ -1,7 +1,8 @@
 import User from "../database/models/user.js"
-import logger from "../utils/logger.js"
+import logger, { loginfo } from "../utils/log.js"
 import { sendMessage, loadMessagesPerChat } from "../services/cassandra/messages.js"
 import { createRoom, loadRoomsForUser } from "../services/cassandra/rooms.js"
+import { AppError } from "../utils/Error.js"
 
 
 
@@ -54,7 +55,7 @@ export const initializeChat = (server, middleware) => {
 export const loadRooms = async (req, res) => {
     try {
         let user = await req.user
-        logger.info("Loading chat rooms for user: " + user.email)
+        loginfo("Loading chat rooms for user: " + user.email)
 
         let rooms = await loadRoomsForUser(user.id)
         console.log(rooms);
@@ -68,7 +69,7 @@ export const loadRooms = async (req, res) => {
         return res.status(200)
 
     } catch (err) {
-        logger.error("MethodError: loadRooms - " + err)
+        throw new AppError("Api error", 500, "Error loading chat rooms", true, err.stack)
     }
 }
 

@@ -1,4 +1,5 @@
-import logger from "../../utils/logger.js"
+import { AppError } from "../../utils/Error.js";
+import logger from "../../utils/log.js"
 import client from "./cassandra.js"
 import { v4 as uuidv4 } from 'uuid'
 
@@ -22,8 +23,7 @@ const sendMessage = async (room_id, from, message) => {
             return null;
         }
     } catch (err) {
-        logger.error("Error sending message in room_id: " + room_id + ", from: " + from)
-
+        throw new AppError("Api error", 500, "Eror sending message in chat with room_id " + room_id + ", from: " + from, true, err.stack)
     }
 };
 
@@ -34,7 +34,7 @@ const loadMessagesPerChat = async (room_id) => {
         let res = await client.execute(query, params, { prepare: true })
         return res
     } catch (err) {
-        logger.error("Error loading messages for room_id: " + room_id)
+        throw new AppError("Cassandra error", 500, "Error loading messages for chat" + room_id, true, err.stack)
     }
 }
 export { sendMessage, loadMessagesPerChat }

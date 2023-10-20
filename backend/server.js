@@ -12,10 +12,10 @@ import passport from "passport"
 import "./passport.config.js"
 // import { initializeChat } from "./controllers/messaging"
 import path from "path"
-import logger from "./utils/logger.js"
 import sessionMiddleware from "./api/middleware/sessions.js"
 import api from "./api/index.js"
 import { fileURLToPath } from 'url';
+import { ErrorHandler } from "./utils/Error.js"
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 // initializeChat(server, sessionMiddleware)
@@ -32,5 +32,5 @@ app.use(fileUpload({
 
 
 app.use("/api", api)
-
+ErrorHandler()
 server.listen(process.env.PORT, () => console.log("Server started on port " + process.env.PORT))

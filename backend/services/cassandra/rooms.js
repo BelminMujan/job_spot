@@ -1,4 +1,4 @@
-import logger from "../../utils/logger.js"
+import logger from "../../utils/log.js"
 import client from "./cassandra.js"
 import { v4 as uuidv4 } from 'uuid'
 
