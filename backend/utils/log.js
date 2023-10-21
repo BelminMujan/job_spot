@@ -44,37 +44,36 @@ class Logger {
       })
     )
   }
+  static loginfo = (msg) => {
+    let pinoinfo = pino(
+      {
+        formatters: {
+          level: (label) => {
+            return { level: label.toUpperCase() };
+          },
+        },
+        timestamp: pino.stdTimeFunctions.isoTime,
+      },
+      pino.transport({
+        target: 'pino-pretty',
+        levels: "info",
+        options: {
+          colorize: false,
+          destination: getLogFile(),
+          translateTime: 'SYS:standard',
+          messageFormat: '{msg}',
+          ignore: "pid,hostname"
+        },
+      })
+    )
+    pinoinfo.info(msg)
+    console.log(msg)
 
+  }
   error(error) {
-    console.log(error)
     this.pino.error(error)
   }
 }
 
-export const loginfo = (msg) => {
-  console.log(msg)
-  let pinoinfo = pino(
-    {
-      formatters: {
-        level: (label) => {
-          return { level: label.toUpperCase() };
-        },
-      },
-      timestamp: pino.stdTimeFunctions.isoTime,
-    },
-    pino.transport({
-      target: 'pino-pretty',
-      levels: "info",
-      options: {
-        colorize: false,
-        destination: getLogFile(),
-        translateTime: 'SYS:standard',
-        messageFormat: '{msg}',
-        ignore: "pid,hostname"
-      },
-    })
-  )
-  pinoinfo.info(msg)
-}
 
 export default Logger

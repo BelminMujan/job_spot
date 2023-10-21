@@ -2,8 +2,8 @@ import Joi from "joi"
 import joii from "../utils/joii.js"
 import UserRepository from "../database/repository/user.js"
 import User from "../database/models/user.js"
-import { loginfo } from "../utils/log.js"
 import { AppError } from "../utils/Error.js"
+import Logger from "../utils/log.js"
 
 export default class UserService {
 
@@ -21,7 +21,7 @@ export default class UserService {
         const validateResult = schema.validate({ email, password, password_confirm })
 
         if (validateResult?.error) {
-            throw new AppError("Validation error", 500, "Error validating on register", true, err.stack)
+            throw new AppError("Validation error", 500, "Error validating on register", true, validateResult?.error)
         }
 
         let user = await userRepository.createUser({ email, password })
@@ -34,7 +34,7 @@ export default class UserService {
                 throw new AppError("App error", 500, "Error on passport authenticate", true, err?.stack)
             } else {
                 if (user) {
-                    loginfo("Attempt logging in: " + user.email)
+                    Logger.loginfo("Attempt logging in: " + user.email)
                 } else {
                     throw new AppError("Api error", 401, "Unathorized", true, info)
                 }

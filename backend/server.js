@@ -15,7 +15,7 @@ import path from "path"
 import sessionMiddleware from "./api/middleware/sessions.js"
 import api from "./api/index.js"
 import { fileURLToPath } from 'url';
-import { ErrorHandler } from "./utils/Error.js"
+import { errorMiddleware } from "./utils/Error.js"
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 // initializeChat(server, sessionMiddleware)
@@ -29,8 +29,8 @@ app.use(fileUpload({
     limits: { fileSize: 50 * 1024 * 1024 },
 }));
 
-
-
 app.use("/api", api)
-ErrorHandler()
+
+app.use(errorMiddleware)
+
 server.listen(process.env.PORT, () => console.log("Server started on port " + process.env.PORT))

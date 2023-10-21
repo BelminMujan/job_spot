@@ -1,5 +1,4 @@
 import Logger from "./log.js";
-import log from "./log.js";
 
 const STATUS_CODES = {
     OK: 200,
@@ -9,7 +8,6 @@ const STATUS_CODES = {
     INTERNAL_ERROR: 500,
 };
 
-const logger = new Logger()
 const isTrusted = (err) => {
     if (err instanceof AppError) {
         return err.isOperational;
@@ -33,26 +31,28 @@ class AppError extends Error {
 
 }
 
-const ErrorHandler = () => {
-    process.on("unhandledRejection", (e) => {
-        logger.error(e)
-    })
-
-    process.on("uncaughtException", (e) => {
-        logger.error(e)
-        if (e instanceof AppError) {
-            if (!isTrusted(e)) {
-                process.exit(1)
-            }
-        }
-    })
+class InternalServerError extends AppError {
+    constructor(name, description, errorStack) {
+        super(name, STATUS_CODES.INTERNAL_ERROR, description, true, errorStack)
+    }
 }
 
+class UnathorizedError extends AppError {
+    constructor(name) {
+        super(name, STATUS_CODES.UN_AUTHORISED, description, true, this.errorStack)
+    }
+}
 
-
+const logger = new Logger()
+const errorMiddleware = (err, req, res, next) => {
+    logger.error(err)
+    throw new AppError(err)
+}
 
 export {
     AppError,
+    InternalServerError,
+    UnathorizedError,
     STATUS_CODES,
-    ErrorHandler
+    errorMiddleware
 };
