@@ -1,5 +1,5 @@
-import { AppError } from "../../utils/Error.js";
-import Logger from "../../utils/log.js";
+import { AppError } from "../../../utils/Error.js";
+import log from "../../../utils/log.js";
 
 const createMessagesTableQuery = `CREATE TABLE IF NOT EXISTS jobspot.messages (
     message_id UUID,
@@ -21,21 +21,21 @@ const createUsersTableQuery = `CREATE TABLE IF NOT EXISTS jobspot.rooms (
 
 const createTables = async (client) => {
   try {
-    Logger.loginfo("Migrating cassandra tables!")
+    log("Migrating cassandra tables!")
     [createMessagesTableQuery, createUsersTableQuery].forEach(async (qq) => {
       await client.execute(qq)
         .then(() => {
-          Logger.loginfo('Table created or already exists');
+          log('Table created or already exists');
         })
         .then(() => {
-          Logger.loginfo('Index created or already exists');
+          log('Index created or already exists');
         })
         .catch(error => {
-          throw new AppError("Cassandra error", 500, "Error creating table or index", true, error?.stack)
+          log(new AppError("Cassandra error", 500, "Error creating table or index", true, error?.stack))
         });
     })
   } catch (error) {
-    throw new AppError("Cassandra error", 500, "Error creating cassandra databases", true, error.stack)
+    log(new AppError("Cassandra error", 500, "Error creating cassandra databases", true, error.stack))
   }
 }
 

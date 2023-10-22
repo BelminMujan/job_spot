@@ -10,15 +10,16 @@ const server = http.createServer(app)
 import bodyParser from "body-parser"
 import passport from "passport"
 import "./passport.config.js"
-// import { initializeChat } from "./controllers/messaging"
 import path from "path"
+import errorMiddleware from "./api/middleware/errorHandler.js"
 import sessionMiddleware from "./api/middleware/sessions.js"
 import api from "./api/index.js"
 import { fileURLToPath } from 'url';
-import { errorMiddleware } from "./utils/Error.js"
+import { log } from "console"
+import { initializeChat } from "./services/messages.js"
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
-// initializeChat(server, sessionMiddleware)
+initializeChat(server, sessionMiddleware)
 
 app.use(bodyParser.json())
 app.use(sessionMiddleware)
@@ -33,4 +34,4 @@ app.use("/api", api)
 
 app.use(errorMiddleware)
 
-server.listen(process.env.PORT, () => console.log("Server started on port " + process.env.PORT))
+server.listen(process.env.PORT, () => log("Server started on port " + process.env.PORT))

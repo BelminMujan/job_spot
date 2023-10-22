@@ -2,10 +2,11 @@ import passport from "passport"
 import User from "./database/models/user.js"
 import bcrypt from "bcrypt"
 import passportLocal from "passport-local"
+import log from "./utils/log.js"
 var LocalStrategy = passportLocal.Strategy
 passport.use(new LocalStrategy({ usernameField: "email" },
     async function (email, password, done) {
-        console.log("authenitacting in local startegy")
+        log("authenitacting in local startegy")
 
         try {
             let user = await User.findOne({ where: { email: email } })

@@ -2,78 +2,55 @@ import pino from 'pino'
 import path from "path"
 import fs from "fs"
 import { fileURLToPath } from 'url';
+import { type } from 'os';
+import { AppError } from './Error.js';
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
-const getLogFile = () => {
+const logger = pino(
+  {
+    formatters: {
+      level: (label) => {
+        return { level: label.toUpperCase() };
+      },
+    },
+    timestamp: pino.stdTimeFunctions.isoTime,
+  },
+  pino.transport({
+    target: 'pino-pretty',
+    options: {
+      colorize: false,
+      destination: getLogFile(),
+      translateTime: 'SYS:standard',
+      nameProps: "name",
+      hideObject: false,
+      ignore: "pid,hostname,err.name,err.statusCode,msg,err.message",
+      messageFormat: '{err.name} {err.statusCode}: {msg}',
+    },
+  })
+)
 
-  const logsDir = path.join(__dirname, "../logs");
-  const logFilePath = path.join(logsDir, "server.log");
-
+function getLogFile() {
   try {
+    const logsDir = path.join(__dirname, "../logs").toString();
+    const logFilePath = path.join(logsDir, "server.log").toString();
     fs.mkdirSync(logsDir, { recursive: true });
-    fs.appendFileSync(logFilePath, "");
-    return logFilePath;
+
+    if (!fs.existsSync(logFilePath)) {
+      fs.writeFileSync(logFilePath, "");
+    } else if (!fs.accessSync(logFilePath, fs.constants.W_OK)) {
+      fs.chmodSync(logFilePath, 0o666);
+    }
+
+    return logFilePath.toString();
   } catch (err) {
     throw err;
   }
 }
-
-class Logger {
-  constructor() {
-    this.pino = pino(
-      {
-        formatters: {
-          level: (label) => {
-            return { level: label.toUpperCase() };
-          },
-        },
-        timestamp: pino.stdTimeFunctions.isoTime,
-      },
-      pino.transport({
-        target: 'pino-pretty',
-        levels: "info",
-        options: {
-          destination: getLogFile(),
-          colorize: false,
-          translateTime: 'SYS:standard',
-          nameProps: "name",
-          hideObject: false,
-          ignore: "pid,hostname,err.name,err.statusCode,msg,err.message",
-          messageFormat: '{err.name} {err.statusCode}: {msg}',
-        },
-      })
-    )
+export default function log(msg) {
+  if (msg instanceof AppError) {
+    logger.error(msg)
+  } else {
+    logger.info(msg)
   }
-  static loginfo = (msg) => {
-    let pinoinfo = pino(
-      {
-        formatters: {
-          level: (label) => {
-            return { level: label.toUpperCase() };
-          },
-        },
-        timestamp: pino.stdTimeFunctions.isoTime,
-      },
-      pino.transport({
-        target: 'pino-pretty',
-        levels: "info",
-        options: {
-          colorize: false,
-          destination: getLogFile(),
-          translateTime: 'SYS:standard',
-          messageFormat: '{msg}',
-          ignore: "pid,hostname"
-        },
-      })
-    )
-    pinoinfo.info(msg)
-    console.log(msg)
-
-  }
-  error(error) {
-    this.pino.error(error)
-  }
+  console.log(msg)
 }
-
-
-export default Logger

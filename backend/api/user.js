@@ -3,16 +3,16 @@ import checkAuth from "./middleware/isAuthenticated.js"
 const routes = Router()
 import UserService from "../services/user.js"
 import { AppError, InternalServerError, STATUS_CODES } from "../utils/Error.js"
-import Logger from "../utils/log.js"
+import log from "../utils/log.js"
 
 const userService = new UserService()
 
 
 routes.post("/register", async (req, res, next) => {
     try {
-        Logger.loginfo("Test from static methdo")
+        log("Test from static methdo")
         const { email, password, password_confirm } = req.body
-        const { data } = await userService.register(email, password, password_confirm)
+        const { data } = await userService.register(emai, password, password_confirm)
     } catch (error) {
         next(new InternalServerError(
             "API Error",
@@ -87,7 +87,6 @@ routes.post("/upload_photo", checkAuth, async (req, res, next) => {
 
     try {
         let file = req.files.image;
-        console.log(file)
         if (!file) {
             return res.sendStatus(400);
         }
@@ -95,7 +94,7 @@ routes.post("/upload_photo", checkAuth, async (req, res, next) => {
             if (err) {
                 throw new AppError("App error", 500, "Error Saving photo", true, err.stack)
             }
-            Logger.loginfo("Image uploaded succesfully")
+            loginfo("Image uploaded succesfully")
             return res.status(200).json({ toast: "Image uploaded succesfully" });
         });
     } catch (error) {

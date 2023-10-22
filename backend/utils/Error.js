@@ -1,4 +1,3 @@
-import Logger from "./log.js";
 
 const STATUS_CODES = {
     OK: 200,
@@ -43,16 +42,10 @@ class UnathorizedError extends AppError {
     }
 }
 
-const logger = new Logger()
-const errorMiddleware = (err, req, res, next) => {
-    logger.error(err)
-    throw new AppError(err)
-}
 
 export {
     AppError,
     InternalServerError,
     UnathorizedError,
     STATUS_CODES,
-    errorMiddleware
 };

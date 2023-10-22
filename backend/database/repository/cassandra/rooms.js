@@ -1,4 +1,4 @@
-import logger from "../../utils/log.js"
+import log from "../../../utils/log.js"
 import client from "./cassandra.js"
 import { v4 as uuidv4 } from 'uuid'
 
@@ -14,16 +14,23 @@ const createRoom = async (u1, u2) => {
             user2: u2,
         };
     } catch (err) {
-        logger.error("Error creating room: " + err)
+        log("Error creating room: " + err)
     }
 };
 
 const loadRoomsForUser = async (userId) => {
-    const query1 = `SELECT user1, user2 FROM jobspot.rooms WHERE user1 = ?  ALLOW FILTERING;`
-    const query2 = `SELECT user1, user2 FROM jobspot.rooms WHERE user2 = ?  ALLOW FILTERING;`
-    let rooms1 = await client.execute(query1, [parseInt(userId)], { prepare: true })
-    let rooms2 = await client.execute(query2, [parseInt(userId)], { prepare: true })
-    return [...rooms1.rows, ...rooms2.rows]
+    try {
+        const query1 = `SELECT user1, user2 FROM jobspot.rooms WHERE user1 = ?  ALLOW FILTERING;`
+        const query2 = `SELECT user1, user2 FROM jobspot.rooms WHERE user2 = ?  ALLOW FILTERING;`
+        let rooms1 = await client.execute(query1, [parseInt(userId)], { prepare: true })
+        let rooms2 = await client.execute(query2, [parseInt(userId)], { prepare: true })
+        return [...rooms1.rows, ...rooms2.rows]
+    } catch (error) {
+        log("Error loading rooms for users: " + err)
+    }
+
 }
+
+
 
 export { createRoom, loadRoomsForUser }
